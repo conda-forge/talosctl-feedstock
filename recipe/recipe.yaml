@@ -1,7 +1,7 @@
 schema_version: 1
 
 context:
-  version: "1.13.0"
+  version: "1.13.2"
 
 package:
   name: talosctl
@@ -9,14 +9,14 @@ package:
 
 source:
   url: https://github.com/siderolabs/talos/archive/refs/tags/v${{ version }}.tar.gz
-  sha256: 358874864900c61384a80e779e156550e0f44a502eefbfd1326a12786a8d3b4d
+  sha256: 61e096008d9e6055d67399e7206db46df6b0320b5f322d4b7a2574fc98368110
 
 build:
   number: 0
   script:
     - if: unix
-      then: go build -v -o $PREFIX/bin/talosctl -ldflags="-s -w -X github.com/siderolabs/talos/pkg/machinery/version.Tag=v${{ version }}" ./cmd/talosctl
-      else: go build -v -o %LIBRARY_BIN%\talosctl.exe -ldflags="-s -X github.com/siderolabs/talos/pkg/machinery/version.Tag=v${{ version }}" ./cmd/talosctl
+      then: GOWORK=off go build -v -o $PREFIX/bin/talosctl -ldflags="-s -w -X github.com/siderolabs/talos/pkg/machinery/version.Tag=v${{ version }}" ./cmd/talosctl
+      else: set GOWORK=off && go build -v -o %LIBRARY_BIN%\talosctl.exe -ldflags="-s -X github.com/siderolabs/talos/pkg/machinery/version.Tag=v${{ version }}" ./cmd/talosctl
     - go-licenses save ./cmd/talosctl --save_path ./library-licenses --ignore github.com/siderolabs/talos
 
 requirements:
