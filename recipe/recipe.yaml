@@ -15,11 +15,11 @@ build:
   number: 0
   script:
     - if: unix
-      then: find . \( -name go.mod -o -name go.work \) -exec sed -i 's/^go 1\.26\.[0-9]*/go 1.26.2/' {} +
+      then: find . \( -name go.mod -o -name go.work \) -exec sed -i.bak 's/^go 1\.26\.[0-9]*/go 1.26.2/' {} + && find . \( -name go.mod.bak -o -name go.work.bak \) -delete
       else: powershell -Command "Get-ChildItem -Recurse -Include go.mod,go.work | ForEach-Object { (Get-Content $_) -replace '^go 1\.26\.\d+', 'go 1.26.2' | Set-Content $_ }"
     - if: unix
       then: GOWORK=off go build -v -o $PREFIX/bin/talosctl -ldflags="-s -w -X github.com/siderolabs/talos/pkg/machinery/version.Tag=v${{ version }}" ./cmd/talosctl
-      else: set GOWORK=off && go build -v -o %LIBRARY_BIN%\talosctl.exe -ldflags="-s -X github.com/siderolabs/talos/pkg/machinery/version.Tag=v${{ version }}" ./cmd/talosctl
+      else: set "GOWORK=off" && go build -v -o %LIBRARY_BIN%\talosctl.exe -ldflags="-s -X github.com/siderolabs/talos/pkg/machinery/version.Tag=v${{ version }}" ./cmd/talosctl
     - go-licenses save ./cmd/talosctl --save_path ./library-licenses --ignore github.com/siderolabs/talos
 
 requirements:
